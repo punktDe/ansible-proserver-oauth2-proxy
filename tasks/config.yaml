@@ -1,0 +1,31 @@
+---
+- name: Create directories for oauth2_proxy config
+  file:
+    state: directory
+    path: "{{ config_dir }}"
+  loop_control:
+    label: "{{ config_dir }}"
+  vars:
+    config_dir: "{{ oauth2_proxy.prefix.opt }}/etc/{{ item }}"
+  with_items: "{{ oauth2_proxy.config.keys()|list }}"
+
+- name: Template oauth2_proxy config
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  with_items: "{{ oauth2_proxy|oauth2_proxy_templates }}"
+  notify: Restart Supervisord
+
+- name: Template supervisord config for oauth2_proxy
+  template:
+    src: "supervisord.d/oauth2_proxy.conf.j2"
+    dest: "{{ config_path }}"
+  loop_control:
+    loop_var: config_name
+    label: "{{ config_path }}"
+  vars:
+    config_path: "{{ supervisord.prefix.config }}/OAuth2Proxy{{ config_name|title }}.conf"
+  with_items: "{{ oauth2_proxy.config.keys()|list }}"
+  notify: Restart Supervisord

@@ -1,0 +1,16 @@
+---
+- name: Create directories for oauth2_proxy
+  file:
+    state: directory
+    path: "{{ item }}"
+  with_items:
+    - "{{ oauth2_proxy.prefix.opt }}/bin"
+    - "{{ oauth2_proxy.prefix.opt }}/etc"
+
+- name: Upload oauth2_proxy binary
+  copy:
+    src: "{{ role_path }}/files/oauth2_proxy/oauth2_proxy"
+    dest: "{{ item }}"
+    mode: "u+x,g+x,o+x"
+  with_items:
+    - "{{ oauth2_proxy.prefix.opt }}/bin/oauth2_proxy"

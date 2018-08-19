@@ -1,0 +1,3 @@
+{% for key, value in item.config.items() %}
+{{ key }} = {{ value|to_json }}
+{% endfor %}
