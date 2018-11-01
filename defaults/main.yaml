@@ -9,8 +9,8 @@ oauth2_proxy:
     htpasswd_file:
     cookie_expire: "672h"
     cookie_refresh: "1h"
-    cookie_secure: true
-    cookie_httponly: true
+    cookie_secure: yes
+    cookie_httponly: yes
     templates:
       oauth2_proxy.ini: "{{ role_path + '/templates/oauth2_proxy/oauth2_proxy.ini.j2' }}"
       sign_in.html: "{{ role_path + '/templates/oauth2_proxy/sign_in.html.j2' }}"
