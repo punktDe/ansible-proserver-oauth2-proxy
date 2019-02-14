@@ -12,6 +12,9 @@ def _merge_defaults(defaults, config):
 def oauth2_proxy_templates(oauth2_proxy):
     files_to_template = []
     for config_name, config in oauth2_proxy['config'].items():
+        if not config:
+            continue
+
         config = _merge_defaults(oauth2_proxy['defaults'], config)
 
         config['custom_templates_dir'] = '{}/etc/{}'.format(oauth2_proxy['prefix']['opt'], config_name)

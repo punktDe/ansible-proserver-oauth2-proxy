@@ -23,9 +23,10 @@
     src: "supervisord.d/oauth2_proxy.conf.j2"
     dest: "{{ config_path }}"
   loop_control:
-    loop_var: config_name
     label: "{{ config_path }}"
+  when: item.value
   vars:
+    config_name: "{{ item.key }}"
     config_path: "{{ supervisord.prefix.config }}/OAuth2Proxy{{ config_name|title }}.conf"
-  with_items: "{{ oauth2_proxy.config.keys()|list }}"
+  with_dict: "{{ oauth2_proxy.config }}"
   notify: Restart Supervisord
