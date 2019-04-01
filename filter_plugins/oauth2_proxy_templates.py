@@ -1,3 +1,5 @@
+from hashlib import md5
+
 def _merge_defaults(defaults, config):
     for key, default in defaults.items():
         if key == 'htpasswd':
@@ -28,6 +30,9 @@ def oauth2_proxy_templates(oauth2_proxy):
                     del template_config['htpasswd_file']
                 elif template_config['htpasswd_file'].__class__.__name__ == 'dict' and template_name == 'oauth2_proxy.ini':
                     template_config['htpasswd_file'] = '{}/etc/{}/htpasswd'.format(oauth2_proxy['prefix']['opt'], config_name)
+
+            if 'cookie_name' not in template_config:
+                template_config['cookie_name'] = 'psOA2{}'.format(md5(config_name.encode('utf-8')).hexdigest()[:5])
 
             files_to_template.append({
                     'src': template_path,
