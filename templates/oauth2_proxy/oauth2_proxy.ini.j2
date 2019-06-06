@@ -1,3 +1,4 @@
-{% for key, value in item.config.items() %}
+{% for key in item.config.keys()|sort -%}
+{%- set value = item.config[key] %}
 {{ key }} = {{ value|to_json }}
 {% endfor %}
