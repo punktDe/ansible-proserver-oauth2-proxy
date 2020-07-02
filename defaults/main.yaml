@@ -24,3 +24,10 @@ oauth2_proxy:
   branding:
     sign_in_header: ""
     footer: ""
+  binaries:
+    linux:
+      url: https://github.com/punktDe/proserver-ansible-oauth2-proxy/releases/download/oauth2-proxy%2Flinux%2Fv6.0.0/oauth2-proxy
+      checksum: sha256:72a2d064e3b65e998fe5a43cda7333ebceb7ea7ffb1bada7c5d6967f95a43186
+    freebsd:
+      url: https://github.com/punktDe/proserver-ansible-oauth2-proxy/raw/cd1b27bc556546e6815a380cfd881bdd9cd852d0/files/oauth2_proxy/oauth2_proxy
+      checksum: sha256:42f8f52fa808be0ebfb2f6ca8d6a4146dcb539168ef0d32da2213f4cf929d9f0

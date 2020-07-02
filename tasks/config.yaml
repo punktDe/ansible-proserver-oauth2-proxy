@@ -1,4 +1,3 @@
----
 - name: Create directories for oauth2_proxy config
   file:
     state: directory
@@ -16,17 +15,5 @@
   loop_control:
     label: "{{ item.dest }}"
   with_items: "{{ oauth2_proxy|oauth2_proxy_templates }}"
-  notify: Restart Supervisord
-
-- name: Template supervisord config for oauth2_proxy
-  template:
-    src: "supervisord.d/oauth2_proxy.conf.j2"
-    dest: "{{ config_path }}"
-  loop_control:
-    label: "{{ config_path }}"
-  when: item.value
-  vars:
-    config_name: "{{ item.key }}"
-    config_path: "{{ supervisord.prefix.config }}/OAuth2Proxy{{ config_name|title }}.conf"
-  with_dict: "{{ oauth2_proxy.config }}"
-  notify: Restart Supervisord
+  register: oauth2_proxy_template_config_result
+  notify: Restart oauth2_proxy

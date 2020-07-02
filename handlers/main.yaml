@@ -1,0 +1,35 @@
+- name: Restart oauth2_proxy
+  shell: |
+    set -e -u -o pipefail
+    {% if ansible_system == 'Linux' %}
+      systemctl daemon-reload
+      systemctl enable oauth2-proxy@{{ item }}
+      systemctl restart oauth2-proxy@{{ item }}
+    {% else %}
+      supervisorctl update OAuth2Proxy{{ item|title }}
+      supervisorctl restart OAuth2Proxy{{ item|title }}
+    {% endif %}
+  args:
+    executable: >-
+      {%- if ansible_system == 'Linux' -%}
+        /usr/bin/bash
+      {%- else -%}
+        /usr/local/bin/bash
+      {%- endif -%}
+  loop: >-
+      {%- set services = [] -%}
+      {%- if oauth2_proxy_install_binary_result.changed
+          or (oauth2_proxy_template_systemd_service_result|default({'changed': false})).changed -%}
+        {%- set _ = services.extend(oauth2_proxy.config.keys()) -%}
+      {%- endif -%}
+      {%- for item in oauth2_proxy_template_config_result.results -%}
+        {%- if item.changed -%}
+          {%- set _ = services.append(item.item.config_name) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- for item in (oauth2_proxy_template_supervisord_config_result|default({'results': []})).results -%}
+        {%- if item.changed -%}
+          {%- set _ = services.append(item.item.key) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{- services|sort|unique -}}

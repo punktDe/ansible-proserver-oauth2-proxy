@@ -38,6 +38,7 @@ def oauth2_proxy_templates(oauth2_proxy):
                     'src': template_path,
                     'dest': '{}/etc/{}/{}'.format(oauth2_proxy['prefix']['opt'], config_name, template_name),
                     'config': template_config,
+                    'config_name': config_name,
                 })
 
     return files_to_template

@@ -1,3 +1,4 @@
 ---
 dependencies:
   - role: supervisord
+    when: ansible_system != 'Linux'

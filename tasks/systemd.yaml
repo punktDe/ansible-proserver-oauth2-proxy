@@ -1,0 +1,12 @@
+- name: Template systemd service for oauth2_proxy
+  when: ansible_system == 'Linux'
+  loop:
+    - src: systemd/oauth2-proxy@.service
+      dest: /etc/systemd/system/oauth2-proxy@.service
+  loop_control:
+    label: "{{ item.dest }}"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  register: oauth2_proxy_template_systemd_service_result
+  notify: Restart oauth2_proxy
