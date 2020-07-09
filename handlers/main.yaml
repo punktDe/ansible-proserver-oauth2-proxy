@@ -12,7 +12,7 @@
   args:
     executable: >-
       {%- if ansible_system == 'Linux' -%}
-        /usr/bin/bash
+        /bin/bash
       {%- else -%}
         /usr/local/bin/bash
       {%- endif -%}
