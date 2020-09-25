@@ -12,9 +12,7 @@ oauth2_proxy:
     cookie_secure: yes
     cookie_httponly: yes
     set_xauthrequest: yes
-    # Note: proxy-prefix is the only option that uses dash instead of underscore.
-    # https://github.com/bitly/oauth2_proxy/blob/fa2771998a98a5bfdfa3c3503757668ac4f1c8ec/options.go#L23
-    proxy-prefix: /proserver/iap
+    proxy_prefix: /proserver/iap
     templates:
       oauth2_proxy.ini: "{{ role_path + '/templates/oauth2_proxy/oauth2_proxy.ini.j2' }}"
       sign_in.html: "{{ role_path + '/templates/oauth2_proxy/sign_in.html.j2' }}"
