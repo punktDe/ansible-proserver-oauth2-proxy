@@ -92,10 +92,8 @@
 	<div class="signin center">
 	<form method="GET" action="{{.ProxyPrefix}}/start">
 	<input type="hidden" name="rd" value="{{.Redirect}}">
-	{{ if .SignInMessage }}
-    {% endraw %}{{ oauth2_proxy.branding.sign_in_header }}{% raw %}
-	<p>{{.SignInMessage}}</p>
-	{{ end}}
+	{% endraw %}{% if oauth2_proxy.branding.sign_in_header %}{{ oauth2_proxy.branding.sign_in_header }}{% endif %}{% raw %}
+	<p>{{ if .SignInMessage }}{{.SignInMessage}}{{ end }}</p>
 	<button type="submit" class="btn">Sign in with {{.ProviderName}}</button><br/>
 	</form>
 	</div>
