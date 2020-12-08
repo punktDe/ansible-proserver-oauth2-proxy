@@ -2,6 +2,7 @@
 {% if oauth2_proxy.http_proxy %}
 Environment=HTTP_PROXY={{ oauth2_proxy.http_proxy }}
 {% endif %}
+RestartSec=10
 ExecStart={{ oauth2_proxy.prefix.opt }}/bin/oauth2_proxy --config {{ oauth2_proxy.prefix.opt }}/etc/%i/oauth2_proxy.ini
 
 [Install]
