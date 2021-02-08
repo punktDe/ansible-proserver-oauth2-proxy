@@ -20,7 +20,7 @@
     {%- set services = [] -%}
     {%- if oauth2_proxy_install_binary_result.changed
         or (oauth2_proxy_template_systemd_service_result|default({'changed': false})).changed -%}
-      {%- set _ = services.extend(oauth2_proxy.config.keys()) -%}
+      {%- set _ = services.extend(oauth2_proxy.config|dict2items|selectattr('value', 'mapping')|map(attribute='key')|list) -%}
     {%- endif -%}
     {%- for item in oauth2_proxy_template_config_result.results -%}
       {%- if item.changed -%}

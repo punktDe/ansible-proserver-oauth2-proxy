@@ -6,7 +6,7 @@
     label: "{{ config_dir }}"
   vars:
     config_dir: "{{ oauth2_proxy.prefix.opt }}/etc/{{ item }}"
-  with_items: "{{ oauth2_proxy.config.keys()|list }}"
+  with_items: "{{ oauth2_proxy.config|dict2items|selectattr('value', 'mapping')|map(attribute='key')|list }}"
 
 - name: Template oauth2_proxy config
   template:
