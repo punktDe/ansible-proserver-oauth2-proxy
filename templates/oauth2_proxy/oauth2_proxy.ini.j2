@@ -1,5 +1,5 @@
 {% for key, value in item.config.items()|rejectattr('1', 'eq', none)|sort -%}
-{% if oauth2_proxy.binaries[ansible_system|lower].checksum == 'sha256:42f8f52fa808be0ebfb2f6ca8d6a4146dcb539168ef0d32da2213f4cf929d9f0' and key == 'proxy_prefix' -%}
+{% if oauth2_proxy.rewrite_keys.proxy_prefix == true and oauth2_proxy.binaries[ansible_system|lower].checksum == 'sha256:42f8f52fa808be0ebfb2f6ca8d6a4146dcb539168ef0d32da2213f4cf929d9f0' and key == 'proxy_prefix' -%}
 proxy-prefix = {{ value|to_json }}
 {% else %}
 {{ key }} = {{ value|to_json }}
