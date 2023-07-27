@@ -2,6 +2,7 @@
 oauth2_proxy:
   prefix:
     opt: /var/opt/oauth2_proxy
+    binary: oauth2_proxy
   http_proxy:
   defaults:
     upstreams: ["http://[::]:0/"]
