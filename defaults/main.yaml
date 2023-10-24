@@ -28,10 +28,3 @@ oauth2_proxy:
   branding:
     sign_in_header: ""
     footer: ""
-  binaries:
-    linux:
-      url: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.linux-amd64.tar.gz
-      checksum: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.linux-amd64-sha256sum.txt
-    freebsd:
-      url: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.freebsd-amd64.tar.gz
-      checksum: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.freebsd-amd64-sha256sum.txt
