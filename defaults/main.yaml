@@ -29,8 +29,8 @@ oauth2_proxy:
     footer: ""
   binaries:
     linux:
-      url: https://github.com/punktDe/ansible-proserver-oauth2-proxy/releases/download/oauth2-proxy%2Flinux%2Fv6.1.1/oauth2-proxy
-      checksum: sha256:c288830f418efa696e7909d9e9bded5f1266f186c56f3f776ad4e055ead7b64a
+      url: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.linux-amd64.tar.gz
+      checksum: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.linux-amd64-sha256sum.txt
     freebsd:
-      url: https://github.com/punktDe/ansible-proserver-oauth2-proxy/raw/cd1b27bc556546e6815a380cfd881bdd9cd852d0/files/oauth2_proxy/oauth2_proxy
-      checksum: sha256:42f8f52fa808be0ebfb2f6ca8d6a4146dcb539168ef0d32da2213f4cf929d9f0
+      url: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.freebsd-amd64.tar.gz
+      checksum: https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.5.1/oauth2-proxy-v7.5.1.freebsd-amd64-sha256sum.txt
