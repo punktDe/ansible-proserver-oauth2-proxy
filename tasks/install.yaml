@@ -1,4 +1,11 @@
 ---
+- name: Set URL variables
+  set_fact:
+    oauth2_proxy_download_url: >- 
+      https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_system | lower }}-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz
+    oauth2_proxy_download_checksum: >-
+      https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_system | lower }}-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}-sha256sum.txt
+
 - name: Create directories for oauth2_proxy
   file:
     state: directory
@@ -12,7 +19,7 @@
   register: oauth2_proxy_download
   check_mode: no
   unarchive:
-    src: "{{ oauth2_proxy.binaries[ ansible_system | lower ].url }}"
+    src: "{{ oauth2_proxy_download_url }}"
     dest: "/tmp"
     remote_src: yes
     mode: a+x
@@ -23,7 +30,7 @@
 - name: Verify the new binary checksum
   register: oauth2_proxy_binary_new
   failed_when: >-
-    lookup('ansible.builtin.url', oauth2_proxy.binaries[ansible_system | lower ].checksum) |
+    lookup('ansible.builtin.url', oauth2_proxy_download_checksum) |
     split(' ') | first != oauth2_proxy_binary_new.stat.checksum
   stat:
     path: "/tmp/{{ oauth2_proxy_download.files[0] }}oauth2-proxy"
