@@ -45,7 +45,7 @@
     get_checksum: yes
 
 - name: Copy the new binary in place
-  when: "oauth2_proxy_binary_old.stat.checksum not in oauth2_proxy_binary_new.stat.checksum"
+  when: "not oauth2_proxy_binary_old.stat.exists or oauth2_proxy_binary_old.stat.checksum not in oauth2_proxy_binary_new.stat.checksum"
   register: oauth2_proxy_install_binary_result
   ansible.builtin.copy:
     remote_src: yes
