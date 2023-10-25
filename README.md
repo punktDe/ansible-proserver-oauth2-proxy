@@ -6,6 +6,7 @@ An Ansible role that sets up [oauth2-proxy](https://github.com/oauth2-proxy/oaut
 
 ## FAQ
 Q: Ansible crashes on macOS when trying to use the role
+
 A: Add the following environment variable to your shell: `OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`
 
 ## Configuration options
