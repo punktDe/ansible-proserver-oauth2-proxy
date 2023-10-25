@@ -1,46 +1,45 @@
 ---
 - name: Set URL variables
-  set_fact:
-    oauth2_proxy_download_url: >- 
+  ansible.builtin.set_fact:
+    oauth2_proxy_download_url: >-
       https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_system | lower }}-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz
     oauth2_proxy_download_checksum: >-
       https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_system | lower }}-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}-sha256sum.txt
 
-- name: Create directories for oauth2_proxy
-  file:
+- name: Create directory for oauth2_proxy binary
+  ansible.builtin.file:
     state: directory
     path: "{{ item }}"
+    owner: root
+    mode: "0755"
   with_items:
     - "{{ oauth2_proxy.prefix.opt }}/bin"
-    - "{{ oauth2_proxy.prefix.opt }}/etc"
-  when: oauth2_proxy.install == true
 
 - name: Download oauth2_proxy binary
   register: oauth2_proxy_download
   check_mode: no
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ oauth2_proxy_download_url }}"
     dest: "/tmp"
     remote_src: yes
     mode: a+x
     list_files: true
   notify: Restart oauth2_proxy
-  when: oauth2_proxy.install == true
 
 - name: Verify the new binary checksum
   register: oauth2_proxy_binary_new
-  failed_when: >-
-    lookup('ansible.builtin.url', oauth2_proxy_download_checksum) |
-    split(' ') | first != oauth2_proxy_binary_new.stat.checksum
-  stat:
+  ansible.builtin.stat:
     path: "/tmp/{{ oauth2_proxy_download.files[0] }}oauth2-proxy"
     checksum_algorithm: sha256
     get_checksum: yes
+  failed_when: >-
+    lookup('ansible.builtin.url', oauth2_proxy_download_checksum) |
+    split(' ') | first != oauth2_proxy_binary_new.stat.checksum
 
 - name: Verify the old binary checksum
   check_mode: no
   register: oauth2_proxy_binary_old
-  stat:
+  ansible.builtin.stat:
     path: "{{ oauth2_proxy.prefix.opt }}/bin/oauth2_proxy"
     checksum_algorithm: sha256
     get_checksum: yes

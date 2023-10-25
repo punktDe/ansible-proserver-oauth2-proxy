@@ -1,19 +1,23 @@
 - name: Create directories for oauth2_proxy config
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ config_dir }}"
+    owner: root
+    mode: "0755"
   loop_control:
     label: "{{ config_dir }}"
   vars:
     config_dir: "{{ oauth2_proxy.prefix.opt }}/etc/{{ item }}"
-  with_items: "{{ oauth2_proxy.config|dict2items|selectattr('value', 'mapping')|map(attribute='key')|list }}"
+  with_items: "{{ oauth2_proxy.config | dict2items | selectattr('value', 'mapping') | map(attribute='key') | list }}"
 
 - name: Template oauth2_proxy config
-  template:
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
+    owner: root
+    mode: "0644"
   loop_control:
     label: "{{ item.dest }}"
-  with_items: "{{ oauth2_proxy|oauth2_proxy_templates }}"
+  with_items: "{{ oauth2_proxy | oauth2_proxy_templates }}"
   register: oauth2_proxy_template_config_result
   notify: Restart oauth2_proxy
