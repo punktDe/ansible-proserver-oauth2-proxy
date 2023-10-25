@@ -101,7 +101,7 @@ oauth2_proxy:
 
 ### branding
 
-Allows you to add custom HTML into the header and footer sections on the oauth2-proxy sign-in page. For example:
+Allows you to add custom HTML to the header and the footer of the oauth2-proxy sign-in page. For example:
 
 ```yaml
 oauth2_proxy:
