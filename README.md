@@ -2,7 +2,7 @@
 An Ansible role that sets up [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) on a Proserver.
 
 ## Dependencies
-[ansible-proserver-supervisord](https://github.com/punktDe/ansible-proserver-supervisord) is required to manage the service
+[ansible-proserver-supervisord](https://github.com/punktDe/ansible-proserver-supervisord) is required to manage the service on FreeBSD
 
 ## FAQ
 Q: Ansible crashes on macOS when trying to use the role
@@ -96,4 +96,26 @@ Likewise, each configuration is managed by its own separate supervisord/systemd 
 ```yaml
 oauth2_proxy:
   config: {}
+```
+
+
+### branding
+
+Allows you to add custom HTML into the header and footer sections on the oauth2-proxy sign-in page. For example:
+
+```yaml
+oauth2_proxy:
+  branding:
+    sign_in_header: >
+      <img src="https://example.com/your-company-logo.png" width="200px"/>
+    footer: >
+      <a href="https://punkt.de">punkt.de</a> OAuth2 Proxy v{% raw %}{{.Version}}{% endraw %}
+```
+
+**Default:**
+```yaml
+oauth2_proxy:
+  branding:
+    sign_in_header:
+    footer:
 ```
