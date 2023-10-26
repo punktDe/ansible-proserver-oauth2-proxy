@@ -20,7 +20,7 @@ oauth2_proxy:
 ```
 
 ### install
-Whether the oauth2-proxy binary should actually be installed. Change to `no` or `false` if your oauth2-proxy installation is already managed by the system package manager.
+Whether the oauth2-proxy binary should actually be installed. Change to `no` or `false` if you'd like to manage the binary yourself.
 
 **Default:**
 ```yaml
