@@ -1,14 +1,16 @@
 - name: Restart oauth2_proxy
-  shell: |
-    set -e -u -o pipefail
-    {% if ansible_system == 'Linux' %}
-      systemctl daemon-reload
-      systemctl enable oauth2-proxy@{{ item }}
-      systemctl restart oauth2-proxy@{{ item }}
-    {% else %}
-      supervisorctl update OAuth2Proxy{{ item|title }}
-      supervisorctl restart OAuth2Proxy{{ item|title }}
-    {% endif %}
+  changed_when: yes
+  ansible.builtin.shell: 
+    cmd: |
+      set -e -u -o pipefail
+      {% if ansible_system == 'Linux' %}
+        systemctl daemon-reload
+        systemctl enable oauth2-proxy@{{ item }}
+        systemctl restart oauth2-proxy@{{ item }}
+      {% else %}
+        supervisorctl update OAuth2Proxy{{ item | title }}
+        supervisorctl restart OAuth2Proxy{{ item | title }}
+      {% endif %}
   args:
     executable: >-
       {%- if ansible_system == 'Linux' -%}
@@ -32,4 +34,4 @@
         {%- set _ = services.append(item.item.key) -%}
       {%- endif -%}
     {%- endfor -%}
-    {{- services|sort|unique -}}
+    {{- services |sort | unique -}}

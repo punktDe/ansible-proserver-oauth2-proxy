@@ -1,5 +1,15 @@
 ---
-- import_tasks: install.yaml
-- import_tasks: config.yaml
-- import_tasks: supervisord.yaml
-- import_tasks: systemd.yaml
+- name: Install the oauth2-proxy binary
+  ansible.builtin.import_tasks: install.yaml
+  when: oauth2_proxy.install | default(True)
+
+- name: Configure oauth2-proxy
+  ansible.builtin.import_tasks: config.yaml
+
+- name: Manage the oauth2_proxy service (supervisord)
+  ansible.builtin.import_tasks: supervisord.yaml
+  when: ansible_system != 'FreeBSD'
+
+- name: Manage the oauth2_proxy service (systemd)
+  ansible.builtin.import_tasks: systemd.yaml
+  when: ansible_system == 'Linux'

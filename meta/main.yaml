@@ -1,4 +1,12 @@
 ---
+galaxy_info:
+  author: "Punkt.de"
+  license: ""
+  description: "oauth2-proxy role for Proserver"
+  role_name: "proserver_oauth2_proxy"
+  namespace: "punktde"
+  min_ansible_version: "2.15"
+
 dependencies:
   - role: supervisord
-    when: ansible_system != 'Linux'
+    when: ansible_system == 'FreeBSD'

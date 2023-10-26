@@ -1,12 +1,14 @@
 - name: Template supervisord config for oauth2_proxy
-  template:
+  ansible.builtin.template:
     src: "supervisord.d/oauth2_proxy.conf.j2"
     dest: "{{ config_path }}"
+    owner: root
+    mode: "0644"
   loop_control:
     label: "{{ config_path }}"
-  when: ansible_system != 'Linux' and item.value
+  when: item.value
   vars:
     config_name: "{{ item.key }}"
-    config_path: "{{ supervisord.prefix.config }}/OAuth2Proxy{{ config_name|title }}.conf"
+    config_path: "{{ supervisord.prefix.config }}/OAuth2Proxy{{ config_name | title }}.conf"
   with_dict: "{{ oauth2_proxy.config }}"
   register: oauth2_proxy_template_supervisord_config_result
