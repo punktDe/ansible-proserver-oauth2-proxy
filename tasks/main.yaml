@@ -8,7 +8,7 @@
 
 - name: Manage the oauth2_proxy service (supervisord)
   ansible.builtin.import_tasks: supervisord.yaml
-  when: ansible_system != 'FreeBSD'
+  when: ansible_system == 'FreeBSD'
 
 - name: Manage the oauth2_proxy service (systemd)
   ansible.builtin.import_tasks: systemd.yaml
