@@ -53,4 +53,4 @@
     dest: "{{ oauth2_proxy.prefix.opt }}/bin/oauth2_proxy"
     mode: "0755"
     owner: "root"
-  ignore_errors: "{{ ansible_check_mode }}"
+  failed_when: oauth2_proxy_install_binary_result.failed and not ansible_check_mode
