@@ -1,17 +1,18 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update oauth2-proxy version from GitHub releases",
-      "managerFilePatterns": ["^defaults/main\\.yaml$"],
-      "matchStrings": [
-        "version:\\s*(?<currentValue>[\\d.]+)"
+      "managerFilePatterns": [
+        "defaults/main.yaml"
       ],
-      "datasourceTemplate": "github-releases",
+      "matchStrings": [
+        "oauth2_proxy:\\s*\\n\\s*version: \"?\\s*(?<currentValue>\\d+\\.\\d+\\.\\d+)\"?"
+      ],
+      "depNameTemplate": "oauth2-proxy",
+      "datasourceTemplate": "github-tags",
       "packageNameTemplate": "oauth2-proxy/oauth2-proxy",
-      "versioningTemplate": "semver-coerced",
-      "extractVersionTemplate": "^v?(?<version>.+)$"
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
     }
   ]
 }
