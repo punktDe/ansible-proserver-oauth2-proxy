@@ -1,6 +1,6 @@
 ---
 oauth2_proxy:
-  version: 7.7.1
+  version: 7.14.2
   install: "{{ true if ansible_facts['system'] == 'Linux' else false }}"
   prefix:
     opt: /var/opt/oauth2_proxy
