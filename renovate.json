@@ -1,4 +1,11 @@
 {
+  "packageRules": [
+    {
+      "matchDepNames": ["oauth2-proxy"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",
@@ -13,6 +20,7 @@
       "packageNameTemplate": "oauth2-proxy/oauth2-proxy",
       "versioningTemplate": "semver",
       "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
+
     }
   ]
 }
