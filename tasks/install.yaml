@@ -2,9 +2,9 @@
 - name: Set URL variables
   ansible.builtin.set_fact:
     oauth2_proxy_download_url: >-
-      https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_system | lower }}-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz
+      https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_facts['system'] | lower }}-{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}.tar.gz
     oauth2_proxy_download_checksum: >-
-      https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_system | lower }}-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}-sha256sum.txt
+      https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{{ oauth2_proxy.version }}/oauth2-proxy-v{{ oauth2_proxy.version }}.{{ ansible_facts['system'] | lower }}-{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}-sha256sum.txt
 
 - name: Create directory for oauth2_proxy binary
   ansible.builtin.file:

@@ -1,7 +1,30 @@
 ---
 - name: Converge
   hosts: all
+  environment:
+    GITHUB_ACTIONS: "maybe"
+    ANSIBLE_HASH_BEHAVIOUR: merge
+  vars:
+    nginx:
+      default_server: no
+    oauth2_proxy:
+      config:
+        test:
+          http_address: "[::1]:4190"
+          provider: google
+          client_id: "wrong"
+          client_secret: "wrong"
+          cookie_name: "supersecretcookie"
+          cookie_secret: "eVYXD7ca-98Z1VdEEaGr3adoL9q66F-1JSwZeh4oNSs="
+          # python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(32)).decode())'
+          cookie_samesite: lax
+          htpasswd_file:
+            molecule: supersecretpassword
   tasks:
+    - name: Include ansible-proserver-nginx
+      ansible.builtin.include_role:
+        name: nginx
+
     - name: "Include ansible-proserver-oauth2-proxy"
       ansible.builtin.include_role:
         name: "ansible-proserver-oauth2-proxy"

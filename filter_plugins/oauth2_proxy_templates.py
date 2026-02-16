@@ -28,7 +28,7 @@ def oauth2_proxy_templates(oauth2_proxy):
             if 'htpasswd_file' in template_config:
                 if not template_config['htpasswd_file']:
                     del template_config['htpasswd_file']
-                elif template_config['htpasswd_file'].__class__.__name__ == 'dict' and template_name == 'oauth2_proxy.ini':
+                elif isinstance(template_config['htpasswd_file'], dict) and template_name == 'oauth2_proxy.ini':
                     template_config['htpasswd_file'] = '{}/etc/{}/htpasswd'.format(oauth2_proxy['prefix']['opt'], config_name)
 
             if 'cookie_name' not in template_config:
