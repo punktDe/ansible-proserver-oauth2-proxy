@@ -1,122 +1,95 @@
+<!-- BEGIN_ANSIBLE_DOCS -->
+<!--
+Do not edit README.md directly!
+
+This file is generated automatically by aar-doc and will be overwritten.
+
+Please edit meta/argument_specs.yml instead.
+-->
 # ansible-proserver-oauth2-proxy
-An Ansible role that sets up [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) on a Proserver.
+
+oauth2-proxy role for Proserver
+
+## Supported Operating Systems
+
+- Debian 12, 13
+- Ubuntu 24.04, 22.04
+- FreeBSD [Proserver](https://infrastructure.punkt.de/de/produkte/proserver.html)
+
+## Role Arguments
+
+
+
+Configures and runs oauth2-proxy for Proserver.
+
+On Linux, the role can install the oauth2-proxy binary from GitHub releases; set `oauth2_proxy.install` to control this. On FreeBSD, installation is not performed by this role.
+
+Multiple oauth2-proxy instances can be defined via `oauth2_proxy.config`; each key is a config name (e.g. `app1`, `app2`) and each value is a mapping that is merged with `oauth2_proxy.defaults`.
+
+On FreeBSD the role uses supervisord to manage services; on Linux it uses systemd. The supervisord config path depends on the `supervisord` role (e.g. `supervisord.prefix.config`).
+
+#### Options for `oauth2_proxy`
+
+|Option|Description|Type|Required|Default|
+|---|---|---|---|---|
+| `version` | oauth2-proxy release version to install from GitHub (e.g. 7.7.1). Only used when `oauth2_proxy.install` is true (Linux). | str | no | 7.7.1 |
+| `install` | Whether to install the oauth2-proxy binary from GitHub releases. Defaults to true on Linux and false on FreeBSD. | bool | no | {{ true if ansible_facts['system'] == 'Linux' else false }} |
+| `prefix` | Paths for oauth2-proxy installation and config. | dict of 'prefix' options | no |  |
+| `rewrite_keys` | Options affecting how config keys are rewritten (e.g. proxy_prefix). | dict | no | {"proxy_prefix": true} |
+| `http_proxy` | Optional HTTP proxy URL. When set, the systemd unit gets HTTP_PROXY. | str | no |  |
+| `defaults` | Default options applied to every entry in `oauth2_proxy.config`. Each config entry is merged with these defaults; per-config values override. | dict of 'defaults' options | no |  |
+| `config` | Per-instance oauth2-proxy configuration. Each key is a config name (e.g. `app1`); each value must be a mapping that is merged with `oauth2_proxy.defaults`. Empty or non-mapping entries are skipped. For each entry, config files are written under `oauth2_proxy.prefix.opt/etc/<config_name>/`. | dict | no |  |
+| `branding` | Branding used in sign-in and error templates. | dict of 'branding' options | no |  |
+
+#### Options for `oauth2_proxy.prefix`
+
+|Option|Description|Type|Required|Default|
+|---|---|---|---|---|
+| `opt` | Base directory for oauth2-proxy (binary and per-instance config under etc/). | str | no | /var/opt/oauth2_proxy |
+| `bin` | Path to the oauth2-proxy executable. | str | no | {{ '/var/opt/oauth2_proxy/bin/oauth2_proxy' if ansible_facts['system'] == 'Linux' else '/usr/local/bin/oauth2-proxy' }} |
+
+#### Options for `oauth2_proxy.defaults`
+
+|Option|Description|Type|Required|Default|
+|---|---|---|---|---|
+| `upstreams` | List of upstream URLs for oauth2-proxy. | list of '' | no | ['http://[::]:0/'] |
+| `request_logging` | Whether to enable request logging (e.g. no, true). | str | no | no |
+| `email_domains` | Allowed email domains (empty means allow all). | list of '' | no | [] |
+| `htpasswd_file` | Optional path to htpasswd file, or a dict of username => password for the role to generate the file from the htpasswd template. | raw | no |  |
+| `cookie_expire` | Cookie expiration (e.g. 672h). | str | no | 672h |
+| `cookie_refresh` | Cookie refresh interval. | str | no | 1h |
+| `cookie_secure` | Set secure flag on cookie. | bool | no | True |
+| `cookie_httponly` | Set httponly flag on cookie. | bool | no | True |
+| `set_xauthrequest` | Whether to set X-Auth-Request-* headers. | bool | no | True |
+| `proxy_prefix` | Proxy prefix path. | str | no | /proserver/iap |
+| `templates` | Paths to Jinja2 templates for oauth2_proxy.ini, sign_in.html, error.html, and htpasswd. Defaults point to the role templates. | dict | no |  |
+
+#### Options for `oauth2_proxy.branding`
+
+|Option|Description|Type|Required|Default|
+|---|---|---|---|---|
+| `sign_in_header` | Optional HTML for the sign-in page header. | str | no |  |
+| `footer` | Optional HTML for the footer on sign-in and error pages. | str | no |  |
 
 ## Dependencies
-[ansible-proserver-supervisord](https://github.com/punktDe/ansible-proserver-supervisord) is required to manage the service on FreeBSD
+None.
 
-## FAQ
-Q: Ansible crashes on macOS when trying to use the role
-
-A: Add the following environment variable to your shell: `OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`
-
-## Configuration options
-### version
-The oauth2-proxy version to be installed. You can see the available verions [here](https://github.com/oauth2-proxy/oauth2-proxy/tags)
-
-**Default:**
+## Installation
+Add this role to the requirements.yml of your playbook as follows:
 ```yaml
-oauth2_proxy:
-  version: 7.5.1
+roles:
+  - name: ansible-proserver-oauth2-proxy
+    src: https://github.com/punktDe/ansible-proserver-oauth2-proxy
 ```
 
-### install
-Whether the oauth2-proxy binary should actually be installed. Change to `no` or `false` if you'd like to manage the binary yourself.
+Afterwards, install the role by running `ansible-galaxy install -r requirements.yml`
 
-**Default:**
-```yaml
-oauth2_proxy:
-  install: true
-```
-
-### prefix
-Manages the location of the oauth2-proxy binary and configuration files, as well as the name of the binary file.
-
-**Default:**
-```yaml
-oauth2_proxy:
-  prefix:
-    opt: /var/opt/oauth2_proxy
-    binary: oauth2_proxy
-```
-
-
-### http_proxy
-The address of the HTTP proxy to be used to access the Internet. Only supported on Linux installations
-
-**Default:**
-```yaml
-oauth2_proxy:
-  http_proxy:
-```
-
-### defaults
-The default options for the oauth2-proxy config file (oauth2_proxy.ini). Most of the time, you'll probably want to use the `config` dict to configure your services instead.
-
-**Default:**
-```yaml
-oauth2_proxy:
-  defaults:
-    upstreams: ["http://[::]:0/"]
-    request_logging: no
-    email_domains: []
-    htpasswd_file:
-    cookie_expire: "672h"
-    cookie_refresh: "1h"
-    cookie_secure: yes
-    cookie_httponly: yes
-    set_xauthrequest: yes
-    proxy_prefix: /proserver/iap
-    templates:
-      oauth2_proxy.ini: "{{ role_path + '/templates/oauth2_proxy/oauth2_proxy.ini.j2' }}"
-      sign_in.html: "{{ role_path + '/templates/oauth2_proxy/sign_in.html.j2' }}"
-      error.html: "{{ role_path + '/templates/oauth2_proxy/error.html.j2' }}"
-      htpasswd: "{{ role_path + '/templates/oauth2_proxy/htpasswd.j2' }}"
-```
-
-### config
-A dictionary that consists of server configurations in the following format:
+## Example Playbook
 
 ```yaml
-oauth2_proxy:
-  config:
-    oidc:
-      upstreams: ["http://[::]:4019"]
-      provider: oidc
-    gitlab:
-      upstreams: ["http://[::]:4018"]
-      provider: gitlab
+- hosts: all
+  roles:
+    - name: oauth2-proxy
 ```
 
-Please consult the [official documentation](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/overview#command-line-options) for a full list of options (the "Command Line Options" section). The CLI options can be converted to config file options by removing the two leading dashes and replacing any dashes in the option name with underscores. For example, `--acr-values` -> `acr_values`.
-
-For each configuration, a separate oauth2-proxy instance will be launched, so make sure that the upstream addresses don't overlap.
-
-Likewise, each configuration is managed by its own separate supervisord/systemd service. For systemd, the service name is `oauth2-proxy@<config-name>.service`. whereas for supervisord, the name is `OAuth2Proxy<CapitalizedConfigName>`.
-
-**Default:**
-```yaml
-oauth2_proxy:
-  config: {}
-```
-
-
-### branding
-
-Allows you to add custom HTML to the header and the footer of the oauth2-proxy sign-in page. For example:
-
-```yaml
-oauth2_proxy:
-  branding:
-    sign_in_header: >
-      <img src="https://example.com/your-company-logo.png" width="200px"/>
-    footer: >
-      <a href="https://punkt.de">punkt.de</a> OAuth2 Proxy v{% raw %}{{.Version}}{% endraw %}
-```
-
-**Default:**
-```yaml
-oauth2_proxy:
-  branding:
-    sign_in_header:
-    footer:
-```
+<!-- END_ANSIBLE_DOCS -->

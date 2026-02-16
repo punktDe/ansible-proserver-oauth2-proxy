@@ -1,3 +1,4 @@
+---
 - name: Template supervisord config for oauth2_proxy
   ansible.builtin.template:
     src: "supervisord.d/oauth2_proxy.conf.j2"

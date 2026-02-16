@@ -1,10 +1,72 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
-  gather_facts: false
   tasks:
-    - name: Example assertion
-      ansible.builtin.assert:
-        that: true
+    - name: Create the current_release folder
+      ansible.builtin.file:
+        dest: "{{ item }}"
+        state: directory
+        owner: www-data
+        mode: "0755"
+      loop:
+        - /var/www
+        - /var/www/current
+
+    - name: Template the example Nginx config
+      ansible.builtin.template:
+        owner: root
+        mode: "0644"
+        src: nginx/http.d/app.conf
+        dest: "/etc/nginx/http.d/app.conf"
+
+    - name: Reload Nginx
+      block:
+        - name: Reload Nginx
+          ansible.builtin.service:
+            name: nginx
+            state: reloaded
+      rescue:
+        - name: Get nginx error log
+          register: nginx_log
+          changed_when: no
+          ansible.builtin.command:
+            cmd: journalctl -eu nginx --no-pager
+
+        - name: Display the Nginx log output
+          ansible.builtin.fail:
+            msg: "{{ nginx_log.stdout }}"
+
+    - name: Copy index.html
+      ansible.builtin.copy:
+        owner: www-data
+        mode: "0777"
+        src: "index.html"
+        dest: "/var/www/current/index.html"
+    - name: Test oauth2-proxy
+      block:
+        - name: Check that the test page IS NOT accessible without authentication
+          ansible.builtin.uri:
+            url: http://localhost
+            return_content: true
+          register: this
+          failed_when: this is failed or ('Hello world!') in this.content
+
+        - name: Check that the test page IS accessible with authentication
+          ansible.builtin.uri:
+            url: http://localhost
+            return_content: true
+            force_basic_auth: true
+            user: molecule
+            password: supersecretpassword
+          register: this
+          failed_when: this is failed or ('Hello world!') not in this.content
+      rescue:
+        - name: Get oauth2-proxy error log
+          register: oauth2proxy_log
+          changed_when: no
+          ansible.builtin.command:
+            cmd: journalctl -eu oauth2-proxy@test --no-pager
+
+        - name: Display the log output
+          ansible.builtin.fail:
+            msg: "{{ oauth2proxy_log.stdout }}"

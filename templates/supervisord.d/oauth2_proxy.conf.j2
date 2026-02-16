@@ -1,3 +1,3 @@
 [program:OAuth2Proxy{{ config_name|title }}]
 user=proserver
-command={{ oauth2_proxy.prefix.opt|quote }}/bin/{{ oauth2_proxy.prefix.binary }} --config {{ oauth2_proxy.prefix.opt|quote }}/etc/{{ config_name }}/oauth2_proxy.ini
+command={{ oauth2_proxy.prefix.bin }} --config {{ oauth2_proxy.prefix.opt|quote }}/etc/{{ config_name }}/oauth2_proxy.ini

@@ -1,3 +1,4 @@
+---
 - name: Template systemd service for oauth2_proxy
   ansible.builtin.template:
     src: systemd/oauth2-proxy@.service

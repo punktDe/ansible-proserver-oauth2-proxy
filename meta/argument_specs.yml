@@ -1,0 +1,142 @@
+---
+argument_specs:
+  main:
+    short_description: Main entry point for the oauth2-proxy role
+    description:
+      - Configures and runs oauth2-proxy for Proserver.
+      - On Linux, the role can install the oauth2-proxy binary from GitHub releases;
+        set `oauth2_proxy.install` to control this. On FreeBSD, installation is
+        not performed by this role.
+      - Multiple oauth2-proxy instances can be defined via `oauth2_proxy.config`;
+        each key is a config name (e.g. `app1`, `app2`) and each value is a mapping
+        that is merged with `oauth2_proxy.defaults`.
+      - On FreeBSD the role uses supervisord to manage services; on Linux it uses
+        systemd. The supervisord config path depends on the `supervisord` role
+        (e.g. `supervisord.prefix.config`).
+    options:
+      oauth2_proxy:
+        type: "dict"
+        required: true
+        options:
+          version:
+            type: "str"
+            default: "7.7.1"
+            description:
+              - oauth2-proxy release version to install from GitHub (e.g. 7.7.1).
+              - Only used when `oauth2_proxy.install` is true (Linux).
+          install:
+            type: "bool"
+            default: "{{ true if ansible_facts['system'] == 'Linux' else false }}"
+            description:
+              - Whether to install the oauth2-proxy binary from GitHub releases.
+              - Defaults to true on Linux and false on FreeBSD.
+          prefix:
+            type: "dict"
+            description:
+              - Paths for oauth2-proxy installation and config.
+            options:
+              opt:
+                type: "str"
+                default: "/var/opt/oauth2_proxy"
+                description:
+                  - Base directory for oauth2-proxy (binary and per-instance config under etc/).
+              bin:
+                type: "str"
+                default: "{{ '/var/opt/oauth2_proxy/bin/oauth2_proxy' if ansible_facts['system'] == 'Linux' else '/usr/local/bin/oauth2-proxy' }}"
+                description:
+                  - Path to the oauth2-proxy executable.
+          rewrite_keys:
+            type: "dict"
+            default:
+              proxy_prefix: true
+            description:
+              - Options affecting how config keys are rewritten (e.g. proxy_prefix).
+          http_proxy:
+            type: "str"
+            description:
+              - Optional HTTP proxy URL. When set, the systemd unit gets HTTP_PROXY.
+          defaults:
+            type: "dict"
+            description:
+              - Default options applied to every entry in `oauth2_proxy.config`.
+              - Each config entry is merged with these defaults; per-config values override.
+            options:
+              upstreams:
+                type: "list"
+                default: ["http://[::]:0/"]
+                description:
+                  - List of upstream URLs for oauth2-proxy.
+              request_logging:
+                type: "str"
+                default: "no"
+                description:
+                  - Whether to enable request logging (e.g. no, true).
+              email_domains:
+                type: "list"
+                default: []
+                description:
+                  - Allowed email domains (empty means allow all).
+              htpasswd_file:
+                type: "raw"
+                description:
+                  - Optional path to htpasswd file, or a dict of username => password
+                    for the role to generate the file from the htpasswd template.
+              cookie_expire:
+                type: "str"
+                default: "672h"
+                description:
+                  - Cookie expiration (e.g. 672h).
+              cookie_refresh:
+                type: "str"
+                default: "1h"
+                description:
+                  - Cookie refresh interval.
+              cookie_secure:
+                type: "bool"
+                default: true
+                description:
+                  - Set secure flag on cookie.
+              cookie_httponly:
+                type: "bool"
+                default: true
+                description:
+                  - Set httponly flag on cookie.
+              set_xauthrequest:
+                type: "bool"
+                default: true
+                description:
+                  - Whether to set X-Auth-Request-* headers.
+              proxy_prefix:
+                type: "str"
+                default: "/proserver/iap"
+                description:
+                  - Proxy prefix path.
+              templates:
+                type: "dict"
+                description:
+                  - Paths to Jinja2 templates for oauth2_proxy.ini, sign_in.html,
+                    error.html, and htpasswd. Defaults point to the role templates.
+          config:
+            type: "dict"
+            default: {}
+            description:
+              - Per-instance oauth2-proxy configuration. Each key is a config name
+                (e.g. `app1`); each value must be a mapping that is merged with
+                `oauth2_proxy.defaults`. Empty or non-mapping entries are skipped.
+              - For each entry, config files are written under
+                `oauth2_proxy.prefix.opt/etc/<config_name>/`.
+          branding:
+            type: "dict"
+            description:
+              - Branding used in sign-in and error templates.
+            options:
+              sign_in_header:
+                type: "str"
+                default: ""
+                description:
+                  - Optional HTML for the sign-in page header.
+              footer:
+                type: "str"
+                default: ""
+                description:
+                  - Optional HTML for the footer on sign-in and error pages.

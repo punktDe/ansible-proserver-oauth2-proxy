@@ -1,9 +1,10 @@
+---
 - name: Restart oauth2_proxy
   changed_when: yes
-  ansible.builtin.shell: 
+  ansible.builtin.shell:
     cmd: |
       set -e -u -o pipefail
-      {% if ansible_system == 'Linux' %}
+      {% if ansible_facts['system'] == 'Linux' %}
         systemctl daemon-reload
         systemctl enable oauth2-proxy@{{ item }}
         systemctl restart oauth2-proxy@{{ item }}
@@ -13,7 +14,7 @@
       {% endif %}
   args:
     executable: >-
-      {%- if ansible_system == 'Linux' -%}
+      {%- if ansible_facts['system'] == 'Linux' -%}
         /bin/bash
       {%- else -%}
         /usr/local/bin/bash
