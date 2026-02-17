@@ -7,9 +7,9 @@
     mode: "0644"
   loop_control:
     label: "{{ config_path }}"
-  when: item.value
+  when: item.value is defined and item.value != None
   vars:
     config_name: "{{ item.key }}"
     config_path: "{{ supervisord.prefix.config }}/OAuth2Proxy{{ config_name | title }}.conf"
-  with_dict: "{{ oauth2_proxy.config }}"
+  loop: "{{ oauth2_proxy.config }}"
   register: oauth2_proxy_template_supervisord_config_result
