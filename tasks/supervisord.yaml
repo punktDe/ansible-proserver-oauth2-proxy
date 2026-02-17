@@ -11,5 +11,5 @@
   vars:
     config_name: "{{ item.key }}"
     config_path: "{{ supervisord.prefix.config }}/OAuth2Proxy{{ config_name | title }}.conf"
-  loop: "{{ oauth2_proxy.config }}"
+  loop: "{{ oauth2_proxy.config | dict2items }}"
   register: oauth2_proxy_template_supervisord_config_result
