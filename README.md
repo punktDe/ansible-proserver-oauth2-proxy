@@ -72,7 +72,8 @@ On FreeBSD the role uses supervisord to manage services; on Linux it uses system
 | `footer` | Optional HTML for the footer on sign-in and error pages. | str | no |  |
 
 ## Dependencies
-None.
+- supervisord
+  - **Condition**: `ansible_facts['system'] == "FreeBSD"`
 
 ## Installation
 Add this role to the requirements.yml of your playbook as follows:

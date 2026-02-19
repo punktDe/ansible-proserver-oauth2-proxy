@@ -1,4 +1,8 @@
 ---
+dependencies:
+  - role: supervisord
+    when: ansible_facts['system'] == "FreeBSD"
+
 galaxy_info:
   author: "punkt.de"
   license: "MIT"
