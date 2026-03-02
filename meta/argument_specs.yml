@@ -111,6 +111,14 @@ argument_specs:
                 default: "/proserver/iap"
                 description:
                   - Proxy prefix path.
+              real_client_ip_header:
+                type: "str"
+                description:
+                  - Header to trust for the real client IP (e.g. X-Real-IP).
+              reverse_proxy:
+                type: "bool"
+                description:
+                  - Whether oauth2-proxy is running behind a reverse proxy.
               templates:
                 type: "dict"
                 description:

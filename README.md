@@ -62,6 +62,8 @@ On FreeBSD the role uses supervisord to manage services; on Linux it uses system
 | `cookie_httponly` | Set httponly flag on cookie. | bool | no | True |
 | `set_xauthrequest` | Whether to set X-Auth-Request-* headers. | bool | no | True |
 | `proxy_prefix` | Proxy prefix path. | str | no | /proserver/iap |
+| `real_client_ip_header` | Header to trust for the real client IP (e.g. X-Real-IP). | str | no |  |
+| `reverse_proxy` | Whether oauth2-proxy is running behind a reverse proxy. | bool | no |  |
 | `templates` | Paths to Jinja2 templates for oauth2_proxy.ini, sign_in.html, error.html, and htpasswd. Defaults point to the role templates. | dict | no |  |
 
 #### Options for `oauth2_proxy.branding`
