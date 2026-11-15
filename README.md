@@ -32,36 +32,36 @@ On FreeBSD the role uses supervisord to manage services; on Linux it uses system
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| `version` | oauth2-proxy release version to install from GitHub (e.g. 7.7.1). Only used when `oauth2_proxy.install` is true (Linux). | str | no | 7.7.1 |
-| `install` | Whether to install the oauth2-proxy binary from GitHub releases. Defaults to true on Linux and false on FreeBSD. | bool | no | {{ true if ansible_facts['system'] == 'Linux' else false }} |
-| `prefix` | Paths for oauth2-proxy installation and config. | dict of 'prefix' options | no |  |
-| `rewrite_keys` | Options affecting how config keys are rewritten (e.g. proxy_prefix). | dict | no | {"proxy_prefix": true} |
+| `version` | oauth2-proxy release version to install from GitHub (e.g. 7.7.1). Only used when `oauth2_proxy.install` is true (Linux). | str | no | `7.7.1` |
+| `install` | Whether to install the oauth2-proxy binary from GitHub releases. Defaults to true on Linux and false on FreeBSD. | bool | no | `{{ true if ansible_facts['system'] == 'Linux' else false }}` |
+| `prefix` | Paths for oauth2-proxy installation and config. | dict of `prefix` [options](#options-for-main--oauth2_proxy--prefix) | no |  |
+| `rewrite_keys` | Options affecting how config keys are rewritten (e.g. proxy_prefix). | dict | no | `{"proxy_prefix": true}` |
 | `http_proxy` | Optional HTTP proxy URL. When set, the systemd unit gets HTTP_PROXY. | str | no |  |
-| `defaults` | Default options applied to every entry in `oauth2_proxy.config`. Each config entry is merged with these defaults; per-config values override. | dict of 'defaults' options | no |  |
+| `defaults` | Default options applied to every entry in `oauth2_proxy.config`. Each config entry is merged with these defaults; per-config values override. | dict of `defaults` [options](#options-for-main--oauth2_proxy--defaults) | no |  |
 | `config` | Per-instance oauth2-proxy configuration. Each key is a config name (e.g. `app1`); each value must be a mapping that is merged with `oauth2_proxy.defaults`. Empty or non-mapping entries are skipped. For each entry, config files are written under `oauth2_proxy.prefix.opt/etc/<config_name>/`. | dict | no |  |
-| `branding` | Branding used in sign-in and error templates. | dict of 'branding' options | no |  |
+| `branding` | Branding used in sign-in and error templates. | dict of `branding` [options](#options-for-main--oauth2_proxy--branding) | no |  |
 
 #### Options for `oauth2_proxy.prefix`
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| `opt` | Base directory for oauth2-proxy (binary and per-instance config under etc/). | str | no | /var/opt/oauth2_proxy |
-| `bin` | Path to the oauth2-proxy executable. | str | no | {{ '/var/opt/oauth2_proxy/bin/oauth2_proxy' if ansible_facts['system'] == 'Linux' else '/usr/local/bin/oauth2-proxy' }} |
+| `opt` | Base directory for oauth2-proxy (binary and per-instance config under etc/). | str | no | `/var/opt/oauth2_proxy` |
+| `bin` | Path to the oauth2-proxy executable. | str | no | `{{ '/var/opt/oauth2_proxy/bin/oauth2_proxy' if ansible_facts['system'] == 'Linux' else '/usr/local/bin/oauth2-proxy' }}` |
 
 #### Options for `oauth2_proxy.defaults`
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| `upstreams` | List of upstream URLs for oauth2-proxy. | list of '' | no | ['http://[::]:0/'] |
-| `request_logging` | Whether to enable request logging (e.g. no, true). | str | no | no |
-| `email_domains` | Allowed email domains (empty means allow all). | list of '' | no | [] |
+| `upstreams` | List of upstream URLs for oauth2-proxy. | list of `` | no | `['http://[::]:0/']` |
+| `request_logging` | Whether to enable request logging (e.g. no, true). | str | no | `no` |
+| `email_domains` | Allowed email domains (empty means allow all). | list of `` | no | `[]` |
 | `htpasswd_file` | Optional path to htpasswd file, or a dict of username => password for the role to generate the file from the htpasswd template. | raw | no |  |
-| `cookie_expire` | Cookie expiration (e.g. 672h). | str | no | 672h |
-| `cookie_refresh` | Cookie refresh interval. | str | no | 1h |
-| `cookie_secure` | Set secure flag on cookie. | bool | no | True |
-| `cookie_httponly` | Set httponly flag on cookie. | bool | no | True |
-| `set_xauthrequest` | Whether to set X-Auth-Request-* headers. | bool | no | True |
-| `proxy_prefix` | Proxy prefix path. | str | no | /proserver/iap |
+| `cookie_expire` | Cookie expiration (e.g. 672h). | str | no | `672h` |
+| `cookie_refresh` | Cookie refresh interval. | str | no | `1h` |
+| `cookie_secure` | Set secure flag on cookie. | bool | no | `True` |
+| `cookie_httponly` | Set httponly flag on cookie. | bool | no | `True` |
+| `set_xauthrequest` | Whether to set X-Auth-Request-* headers. | bool | no | `True` |
+| `proxy_prefix` | Proxy prefix path. | str | no | `/proserver/iap` |
 | `real_client_ip_header` | Header to trust for the real client IP (e.g. X-Real-IP). | str | no |  |
 | `reverse_proxy` | Whether oauth2-proxy is running behind a reverse proxy. | bool | no |  |
 | `templates` | Paths to Jinja2 templates for oauth2_proxy.ini, sign_in.html, error.html, and htpasswd. Defaults point to the role templates. | dict | no |  |
